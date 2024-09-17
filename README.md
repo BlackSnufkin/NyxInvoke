@@ -164,7 +164,8 @@ cargo +nightly build --release --features=compiled_bof,compiled_clr
 
 - Local BOF Executaion 
 
-![Screenshot 2024-09-17 174319](https://github.com/user-attachments/assets/3eb73030-b81a-4e94-b2d0-2e95b5249242)
+![Screenshot 2024-09-17 174657](https://github.com/user-attachments/assets/5cf116d7-ff32-4f1a-be42-00ca4e4755ee)
+
 
 
 - Compiled BOF Executaion 
