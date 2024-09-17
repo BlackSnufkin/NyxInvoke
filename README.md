@@ -182,6 +182,10 @@ cargo +nightly build --release --features=compiled_bof,compiled_clr
 ![Screenshot 2024-09-17 172028](https://github.com/user-attachments/assets/d055cb24-c8f0-4df7-b358-12a061f33c50)
 
 
+## Creadits
+@yamakadi for the [clroxide](https://github.com/yamakadi/clroxide) project
+@hakaioffsec for the [coffe](https://github.com/hakaioffsec/coffee) project
+
 ## Legal Notice
 
 This tool is for educational and authorized testing purposes only. Ensure you have proper permissions before use in any environment.
