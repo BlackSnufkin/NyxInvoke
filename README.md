@@ -154,6 +154,17 @@ cargo +nightly build --release --features=compiled_bof,compiled_clr
 
 ## Screenshot
 
+![Screenshot 2024-09-17 164409](https://github.com/user-attachments/assets/ba9b9200-226b-4179-a442-558be35b1dd9)
+
+![Screenshot 2024-09-17 164446](https://github.com/user-attachments/assets/956d0a70-42cf-443c-8302-9cae967d7624)
+
+![Screenshot 2024-09-17 164521](https://github.com/user-attachments/assets/9c992be6-902a-46b5-bafd-35909e7080a2)
+
+![Screenshot 2024-09-17 164737](https://github.com/user-attachments/assets/a0b49a19-5657-47f6-ad15-92376b405b77)
+
+![Screenshot 2024-09-17 171636](https://github.com/user-attachments/assets/296bedfd-4bb9-4905-8391-c456fc591fe3)
+
+![Screenshot 2024-09-17 172028](https://github.com/user-attachments/assets/d055cb24-c8f0-4df7-b358-12a061f33c50)
 
 
 ## Legal Notice
