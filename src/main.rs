@@ -566,9 +566,9 @@ pub fn compiled_clr() -> Option<(&'static [u8], [u8; 32], [u8; 16])> {
 #[link_section = ".rdata"]
 pub fn compiled_bof() -> (&'static [u8], [u8; 32], [u8; 16]) {
     (
-        &*include_bytes!("../Resources/bof_2_data.enc"),
-        *include_bytes!("../Resources/bof_2_aes.key"),
-        *include_bytes!("../Resources/bof_2_aes.iv"),
+        &*include_bytes!("../Resources/bof_data.enc"),
+        *include_bytes!("../Resources/bof_aes.key"),
+        *include_bytes!("../Resources/bof_aes.iv"),
     )
 }
 
@@ -623,6 +623,7 @@ enum Mode {
         #[arg(long, group = "ps_input")]
         script: Option<String>,
     },
+    /// Execute a Beacon Object File (BOF)
     Bof {
         /// Arguments for the BOF
         #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ')]
