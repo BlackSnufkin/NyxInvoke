@@ -110,7 +110,7 @@ In the `resources` directory, you'll find several files to test NyxInvoke's func
    - Description: An encrypted version of the Seatbelt tool, a C# project for gathering system information.
    - Usage example:
      ```
-     NyxInvoke.exe clr --key resources/aes.key --iv resources/aes.iv --assembly resources/clr_data.enc --args AntiVirus
+     NyxInvoke.exe clr --key resources/clr_aes.key --iv resources/clr_aes.iv --assembly resources/clr_data.enc --args AntiVirus
      ```
 
 2. Encrypted BOF (Directory Listing):
@@ -118,18 +118,18 @@ In the `resources` directory, you'll find several files to test NyxInvoke's func
    - Description: An encrypted Beacon Object File that executes the 'dir' command.
    - Usage example:
      ```
-     NyxInvoke.exe bof --key resources/aes.key --iv resources/aes.iv --bof resources/bof_data.enc --args "wstr=C:\\Windows"
+     NyxInvoke.exe bof --key resources/bof_aes.key --iv resources/bof_aes.iv --bof resources/bof_data.enc --args "wstr=C:\\Windows"
      ```
 
 
 ## Building
 
-To build NyxInvoke with compiled-in CLR or BOF data:
+To build NyxInvoke
 
 ```
 cargo +nightly build --release --target=x86_64-pc-windows-msvc
 ```
-or
+or with compiled-in CLR or BOF data
 ```
 cargo +nightly build --release --features=compiled_bof,compiled_clr
 ```
