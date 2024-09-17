@@ -1,0 +1,28 @@
+[package]
+name = "NyxInvoke"
+version = "0.2.4"
+edition = "2021"
+authors = ["BlackSnufkin"]
+
+
+[dependencies]
+clroxide = { version = "1.1.1", default-features = true }
+clap = { version = "4.5.0", features = ["derive"] }
+winapi = {version = "0.3.9", features =["ntdef", "ntstatus", "minwindef", "winnt","memoryapi","handleapi","libloaderapi","errhandlingapi","winbase"]}
+ntapi = {version = "0.4.1"}
+reqwest = { version = "0.11", features = ["blocking"] }
+rust-crypto = "0.2.36"
+coffee-ldr = "*"
+base64 = "*"
+
+
+[profile.release]
+opt-level = "z"     # Optimize for size.
+lto = true          # Enable Link Time Optimization
+codegen-units = 1   # Reduce number of codegen units to increase optimizations.
+panic = "abort"     # Abort on panic
+strip = true        # Automatically strip symbols from the binary.
+
+[features]
+compiled_clr = []
+compiled_bof = []
