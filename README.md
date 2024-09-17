@@ -1,6 +1,6 @@
 # NyxInvoke
 
-NyxInvoke is a versatile command-line tool designed for executing .NET assemblies, PowerShell commands/scripts, and Beacon Object Files (BOFs) with built-in patchless AMSI and ETW bypass capabilities.
+NyxInvoke is a rust based command-line tool designed for executing .NET assemblies, PowerShell commands/scripts, and Beacon Object Files (BOFs) with built-in patchless AMSI and ETW bypass capabilities.
 
 ## Features
 
@@ -92,17 +92,12 @@ Options:
 
 ### PowerShell Mode
 
-1. Remote Script Execution:
-   ```
-   NyxInvoke.exe ps --script https://example.com/script.ps1
-   ```
-
-2. Local Script Execution:
+1. Script Execution:
    ```
    NyxInvoke.exe ps --script C:\path\to\script.ps1
    ```
 
-3. Direct Command Execution:
+2. Direct Command Execution:
    ```
    NyxInvoke.exe ps --command "Get-Process | Select-Object Name, ID"
    ```
