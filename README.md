@@ -46,7 +46,7 @@ Where `<mode>` is one of: `clr`, `ps`, or `bof`.
 
 3. BOF Mode:
    - `--bof <BOF_FILENAME_OR_URL>`: BOF file or URL
-   - `--args <ARGS>...`: Arguments for the BOF
+   - `--args <ARGS>...`: Arguments for the BOF, use the format "type=value". Supported types: str, wstr, int, short, bin (base64 encoded).
 
 ## Examples
 
@@ -134,16 +134,7 @@ or with compiled-in CLR or BOF data
 cargo +nightly build --release --features=compiled_bof,compiled_clr
 ```
 
-## Dependencies
 
-- Rust 1.55 or later
-- Various Rust crates (see `Cargo.toml`)
-
-## Notes
-
-- Supports AES decryption for encrypted payloads.
-- Can load resources from local files, URLs, or use compiled-in data.
-- For BOF arguments, use the format "type=value". Supported types: str, wstr, int, short, bin (base64 encoded).
 
 ## Legal Notice
 
