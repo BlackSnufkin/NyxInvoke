@@ -133,10 +133,10 @@ In the `resources` directory, you'll find several files to test NyxInvoke's func
 
 2. Encrypted BOF (Directory Listing):
    - File: `bof_data.enc`
-   - Description: An encrypted Beacon Object File that executes the 'dir' command.
+   - Description: An encrypted Beacon Object File that List user permissions for the specified file, wildcards supported.
    - Usage example:
      ```
-     NyxInvoke.exe bof --key resources/bof_aes.key --iv resources/bof_aes.iv --bof resources/bof_data.enc --args "wstr=C:\\Windows"
+     NyxInvoke.exe bof --key resources/bof_aes.key --iv resources/bof_aes.iv --bof resources/bof_data.enc --args "wstr=C:\Windows\system32\cmd.exe"
      ```
 
 
