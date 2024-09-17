@@ -164,11 +164,13 @@ cargo +nightly build --release --features=compiled_bof,compiled_clr
 
 - Local BOF Executaion 
 
-![Screenshot 2024-09-17 164521](https://github.com/user-attachments/assets/9c992be6-902a-46b5-bafd-35909e7080a2)
+![Screenshot 2024-09-17 174319](https://github.com/user-attachments/assets/3eb73030-b81a-4e94-b2d0-2e95b5249242)
+
 
 - Compiled BOF Executaion 
 
-![Screenshot 2024-09-17 164737](https://github.com/user-attachments/assets/a0b49a19-5657-47f6-ad15-92376b405b77)
+![Screenshot 2024-09-17 174102](https://github.com/user-attachments/assets/33c51e4e-9ce9-4c5b-9883-743add95f925)
+
 
 - Powershell Command Executaion 
 
