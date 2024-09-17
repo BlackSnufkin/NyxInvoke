@@ -28,25 +28,48 @@ NyxInvoke.exe <mode> [OPTIONS]
 
 Where `<mode>` is one of: `clr`, `ps`, or `bof`.
 
-### Common Options
-
-- `--base <BASE_URL_OR_PATH>`: Base URL or path for resources
-- `--key <KEY_FILENAME_OR_URL>`: AES key file or URL
-- `--iv <IV_FILENAME_OR_URL>`: AES IV file or URL
-
 ### Mode-Specific Options
 
 1. CLR Mode:
-   - `--assembly <ASSEMBLY_FILENAME_OR_URL>`: .NET assembly file or URL
-   - `--args <ARGS>...`: Arguments for the executable
+```text
+Execute a .NET assembly
 
+Usage: NyxInvoke.exe clr [OPTIONS]
+
+Options:
+      --args <ARGS>                          Arguments for the executable
+      --base <BASE_URL_OR_PATH>              Base URL or Base Path
+      --key <KEY_FILENAME_OR_URL>            Key filename or URL
+      --iv <IV_FILENAME_OR_URL>              IV filename or URL
+      --assembly <ASSEMBLY_FILENAME_OR_URL>  Assembly filename or URL
+  -h, --help                                 Print help
+```
 2. PowerShell Mode:
-   - `--command <COMMAND>`: PowerShell command to execute
-   - `--script <SCRIPT_PATH_OR_URL>`: PowerShell script file or URL
+```text
+Execute a PowerShell command or script
+
+Usage: NyxInvoke.exe ps [OPTIONS]
+
+Options:
+      --command <COMMAND>  PowerShell command to execute
+      --script <SCRIPT>    Path to a PowerShell script to execute
+  -h, --help               Print help                                Print help
+```
 
 3. BOF Mode:
-   - `--bof <BOF_FILENAME_OR_URL>`: BOF file or URL
-   - `--args <ARGS>...`: Arguments for the BOF, use the format "type=value". Supported types: str, wstr, int, short, bin (base64 encoded).
+```text
+Execute a Beacon Object File (BOF)
+
+Usage: NyxInvoke.exe bof [OPTIONS]
+
+Options:
+      --args <ARGS>...             Arguments for the BOF
+      --base <BASE_URL_OR_PATH>    Base URL or Base Path
+      --key <KEY_FILENAME_OR_URL>  Key filename or URL
+      --iv <IV_FILENAME_OR_URL>    IV filename or URL
+      --bof <BOF_FILENAME_OR_URL>  BOF filename or URL
+  -h, --help                       Print help                                Print help
+```
 
 ## Examples
 
