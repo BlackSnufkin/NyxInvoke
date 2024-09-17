@@ -183,8 +183,8 @@ cargo +nightly build --release --features=compiled_bof,compiled_clr
 
 
 ## Creadits
-@yamakadi for the [clroxide](https://github.com/yamakadi/clroxide) project
-@hakaioffsec for the [coffe](https://github.com/hakaioffsec/coffee) project
+- @yamakadi for the [clroxide](https://github.com/yamakadi/clroxide) project
+- @hakaioffsec for the [coffe](https://github.com/hakaioffsec/coffee) project
 
 ## Legal Notice
 
