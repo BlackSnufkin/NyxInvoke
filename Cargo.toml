@@ -16,7 +16,7 @@ path = "src/main.rs"
 
 
 [features]
-default = ["exe"]
+default = []
 exe = []
 dll = []
 compiled_clr = []

@@ -20,23 +20,23 @@ NyxInvoke can be built as either an executable or a DLL. Use the following comma
 ### Executable
 
 ```
-cargo build --release --features exe
+cargo +nightly build --release --target=x86_64-pc-windows-msvc --bin NyxInvoke
 ```
 
 ### DLL
 
 ```
-cargo build --release --features dll
+cargo +nightly build --release --target=x86_64-pc-windows-msvc --features dll --lib
 ```
 
 To include compiled-in CLR or BOF data, add the respective features:
 
 ```
-cargo build --release --features "exe,compiled_clr,compiled_bof"
+cargo +nightly build --release --target=x86_64-pc-windows-msvc --features=exe,compiled_clr,compiled_bof --bin NyxInvoke
 ```
 or
 ```
-cargo build --release --features "dll,compiled_clr,compiled_bof"
+cargo +nightly build --release --target=x86_64-pc-windows-msvc --features "dll,compiled_clr,compiled_bof" --lib
 ```
 
 ## Usage
