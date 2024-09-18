@@ -54,6 +54,7 @@ use winapi::um::winbase::STD_ERROR_HANDLE;
 use winapi::um::handleapi::INVALID_HANDLE_VALUE;
 use winapi::um::fileapi::FlushFileBuffers;
 use winapi::um::fileapi::WriteFile;
+use reqwest::blocking::Client;
 
 static INIT: Once = Once::new();
 
@@ -503,7 +504,18 @@ fn read_file(filename: &str) -> Result<Vec<u8>, String> {
 }
 
 fn fetch_file_from_url(url: &str) -> Result<Vec<u8>, String> {
-    let response = get(url).map_err(|e| format!("Failed to fetch the URL {}: {}", url, e))?;
+    // Build a custom client that disables SSL certificate validation
+    let client = Client::builder()
+        .danger_accept_invalid_certs(true) // Allow self-signed or invalid certificates
+        .build()
+        .map_err(|e| format!("Failed to build the HTTP client: {}", e))?;
+
+    // Make the request using the custom client
+    let response = client
+        .get(url)
+        .send()
+        .map_err(|e| format!("Failed to fetch the URL {}: {}", url, e))?;
+
     if !response.status().is_success() {
         return Err(format!(
             "Non-success response from {}: {}",
@@ -511,12 +523,12 @@ fn fetch_file_from_url(url: &str) -> Result<Vec<u8>, String> {
             response.status()
         ));
     }
+
     let bytes = response
         .bytes()
         .map_err(|e| format!("Failed to read response from {}: {}", url, e))?;
     Ok(bytes.to_vec())
 }
-
 
 fn parse_bof_arguments(args: &[String]) -> Result<Vec<u8>, String> {
     let mut parsed_args = Vec::new();
