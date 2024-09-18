@@ -659,19 +659,19 @@ pub fn execute_clr_mode(args: Vec<String>, base: Option<String>, key: Option<Str
         };
 
         // Decide whether to fetch from URL or read from file based on whether paths start with "http"
-        let key_bytes = if key_full_path.starts_with("http") {
+        let key_bytes = if key_full_path.starts_with("http") || key_full_path.starts_with("https") {
             fetch_file_from_url(&key_full_path)?
         } else {
             read_file(&key_full_path)?
         };
 
-        let iv_bytes = if iv_full_path.starts_with("http") {
+        let iv_bytes = if iv_full_path.starts_with("http") || iv_full_path.starts_with("https") {
             fetch_file_from_url(&iv_full_path)?
         } else {
             read_file(&iv_full_path)?
         };
 
-        let data = if assembly_full_path.starts_with("http") {
+        let data = if assembly_full_path.starts_with("http") || assembly_full_path.starts_with("http") {
             fetch_file_from_url(&assembly_full_path)?
         } else {
             read_file(&assembly_full_path)?
@@ -754,19 +754,19 @@ pub fn execute_bof_mode(args: Option<Vec<String>>, base: Option<String>, key: Op
         };
 
         // Decide whether to fetch from URL or read from file based on whether paths start with "http"
-        let key_bytes = if key_full_path.starts_with("http") {
+        let key_bytes = if key_full_path.starts_with("http") || key_full_path.starts_with("https") {
             fetch_file_from_url(&key_full_path)?
         } else {
             read_file(&key_full_path)?
         };
 
-        let iv_bytes = if iv_full_path.starts_with("http") {
+        let iv_bytes = if iv_full_path.starts_with("http") || iv_full_path.starts_with("https") {
             fetch_file_from_url(&iv_full_path)?
         } else {
             read_file(&iv_full_path)?
         };
 
-        let data = if bof_full_path.starts_with("http") {
+        let data = if bof_full_path.starts_with("http") || bof_full_path.starts_with("https") {
             fetch_file_from_url(&bof_full_path)?
         } else {
             read_file(&bof_full_path)?
