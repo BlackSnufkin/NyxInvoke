@@ -168,32 +168,20 @@ In the `resources` directory, you'll find several files to test NyxInvoke's func
 
 ## Screenshot
 
-- Remote CLR Executaion 
 
-![Screenshot 2024-09-17 164409](https://github.com/user-attachments/assets/ba9b9200-226b-4179-a442-558be35b1dd9)
+- Dll Compiled CLR Executaion 
 
-- Compiled CLR Executaion 
-
-![Screenshot 2024-09-17 164446](https://github.com/user-attachments/assets/956d0a70-42cf-443c-8302-9cae967d7624)
-
-- Local BOF Executaion 
-
-![Screenshot 2024-09-17 174657](https://github.com/user-attachments/assets/5cf116d7-ff32-4f1a-be42-00ca4e4755ee)
+![Screenshot 2024-09-18 123147](https://github.com/user-attachments/assets/dd58adbc-50f2-4eb4-9a33-0851bacfe754)
 
 
+- EXE Remote BOF Executaion 
 
-- Compiled BOF Executaion 
-
-![Screenshot 2024-09-17 174102](https://github.com/user-attachments/assets/33c51e4e-9ce9-4c5b-9883-743add95f925)
+![Screenshot 2024-09-18 123410](https://github.com/user-attachments/assets/54a20996-7cf3-4cbb-ab4d-6e7973094e80)
 
 
-- Powershell Command Executaion 
+- Dll Powershell Script Executaion 
 
-![Screenshot 2024-09-17 171636](https://github.com/user-attachments/assets/296bedfd-4bb9-4905-8391-c456fc591fe3)
-
-- Powershell Script Executaion 
-
-![Screenshot 2024-09-17 172028](https://github.com/user-attachments/assets/d055cb24-c8f0-4df7-b358-12a061f33c50)
+![Screenshot 2024-09-18 123547](https://github.com/user-attachments/assets/6c1e2f53-0d85-45e8-8a38-4a6dcb08a767)
 
 
 
