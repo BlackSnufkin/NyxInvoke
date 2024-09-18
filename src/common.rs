@@ -620,7 +620,7 @@ pub struct Cli {
 #[derive(Parser)]
 pub enum Mode {
     Clr {
-        #[arg(long, value_name = "ARGS", trailing_var_arg = true)]
+        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ', last = true)]
         args: Vec<String>,
         #[arg(long, value_name = "BASE_URL_OR_PATH")]
         base: Option<String>,
