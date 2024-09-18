@@ -36,7 +36,7 @@ cargo +nightly build --release --target=x86_64-pc-windows-msvc --features=exe,co
 ```
 or
 ```
-cargo +nightly build --release --target=x86_64-pc-windows-msvc --features "dll,compiled_clr,compiled_bof" --lib
+cargo +nightly build --release --target=x86_64-pc-windows-msvc --features=dll,compiled_clr,compiled_bof --lib
 ```
 
 ## Usage
