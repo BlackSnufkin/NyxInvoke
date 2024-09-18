@@ -638,7 +638,7 @@ pub enum Mode {
         script: Option<String>,
     },
     Bof {
-        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ')]
+        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ', last = true)]
         args: Option<Vec<String>>,
         #[arg(long, value_name = "BASE_URL_OR_PATH")]
         base: Option<String>,
