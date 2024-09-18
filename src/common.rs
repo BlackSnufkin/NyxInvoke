@@ -1,4 +1,4 @@
-#![allow(non_snake_case, non_camel_case_types,dead_code,unused_imports)]
+#![allow(non_snake_case, non_camel_case_types,dead_code)]
 
 use std::ffi::CString;
 use std::ptr::null_mut;
@@ -529,6 +529,7 @@ fn fetch_file_from_url(url: &str) -> Result<Vec<u8>, String> {
         .map_err(|e| format!("Failed to read response from {}: {}", url, e))?;
     Ok(bytes.to_vec())
 }
+
 
 fn parse_bof_arguments(args: &[String]) -> Result<Vec<u8>, String> {
     let mut parsed_args = Vec::new();

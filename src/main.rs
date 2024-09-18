@@ -5,6 +5,7 @@ mod common;
 use clap::Parser;
 use common::*;
 
+#[cfg(feature = "exe")]
 fn main() {
     let cli = Cli::parse();
 

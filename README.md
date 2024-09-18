@@ -20,7 +20,7 @@ NyxInvoke can be built as either an executable or a DLL. Use the following comma
 ### Executable
 
 ```
-cargo +nightly build --release --target=x86_64-pc-windows-msvc --bin NyxInvoke
+cargo +nightly build --release --target=x86_64-pc-windows-msvc --features exe --bin NyxInvoke
 ```
 
 ### DLL
