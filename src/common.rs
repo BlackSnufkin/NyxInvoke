@@ -611,7 +611,8 @@ pub fn compiled_bof() -> Option<&'static [u8]> {
 
 
 #[derive(Parser)]
-#[command(author, version, about)]
+#[command(name = "NyxInvoke")]
+#[command(about = "Patchless inline-execute assembly", long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
     pub mode: Mode,

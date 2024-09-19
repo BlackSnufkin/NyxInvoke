@@ -17,7 +17,7 @@ fn parse_command_line(cmd: &str) -> Vec<String> {
         match c {
             '"' if !escaped => {
                 in_quotes = !in_quotes;
-                current_arg.push(c);
+                // Do not include the quote character in the argument
             },
             ' ' if !in_quotes && !escaped => {
                 if !current_arg.is_empty() {
@@ -45,7 +45,6 @@ fn parse_command_line(cmd: &str) -> Vec<String> {
     args
 }
 
-
 #[cfg(feature = "dll")]
 use common::dll_specific::*;
 
@@ -68,7 +67,7 @@ pub extern "system" fn NyxInvoke(_hwnd: *mut c_void, _hinst: *mut c_void, lpszCm
 
         let args = parse_command_line(command_str);
 
-        let mut cli_args = vec![String::from("NyxInvoke.exe")];
+        let mut cli_args = vec![String::from("NyxInvoke.dll")];
         cli_args.extend(args);
 
 
