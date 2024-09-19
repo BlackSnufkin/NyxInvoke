@@ -69,44 +69,52 @@ rundll32.exe NyxInvoke.dll,NyxInvoke <mode> [OPTIONS]
 
 1. CLR Mode:
 ```text
-Execute a .NET assembly
+Execute Common Language Runtime (CLR) assemblies
 
-Usage: NyxInvoke.exe clr [OPTIONS] (or rundll32.exe NyxInvoke.dll,NyxInvoke clr [OPTIONS])
+Usage: NyxInvoke.exe clr [OPTIONS]
 
 Options:
-      --args <ARGS>                          Arguments for the executable
-      --base <BASE_URL_OR_PATH>              Base URL or Base Path
-      --key <KEY_FILENAME_OR_URL>            Key filename or URL
-      --iv <IV_FILENAME_OR_URL>              IV filename or URL
-      --assembly <ASSEMBLY_FILENAME_OR_URL>  Assembly filename or URL
-  -h, --help                                 Print help
+      --args <ARGS>...            Arguments to pass to the assembly
+      --base <URL_OR_PATH>        Base URL or path for resources
+      --key <KEY_FILE>            Path to the encryption key file
+      --iv <IV_FILE>              Path to the initialization vector (IV) file
+      --assembly <ASSEMBLY_FILE>  Path or URL to the encrypted assembly file to execute
+  -h, --help                      Print help (see more with '--help')
+
+Example: NyxInvoke.exe clr --assembly payload.enc --key key.bin --iv iv.bin --args "arg1 arg2"
 ```
 
 2. PowerShell Mode:
 ```text
-Execute a PowerShell command or script
+Execute PowerShell commands or scripts
 
-Usage: NyxInvoke.exe ps [OPTIONS] (or rundll32.exe NyxInvoke.dll,NyxInvoke ps [OPTIONS])
+Usage: NyxInvoke.exe ps [OPTIONS]
 
 Options:
       --command <COMMAND>  PowerShell command to execute
-      --script <SCRIPT>    Path to a PowerShell script to execute
-  -h, --help               Print help
+      --script <SCRIPT>    Path to PowerShell script file to execute
+  -h, --help               Print help (see more with '--help')
+
+Examples:
+NyxInvoke.exe ps --command "Get-Process"
+NyxInvoke.exe ps --script script.ps1
 ```
 
 3. BOF Mode:
 ```text
-Execute a Beacon Object File (BOF)
+Execute Beacon Object Files (BOF)
 
-Usage: NyxInvoke.exe bof [OPTIONS] (or rundll32.exe NyxInvoke.dll,NyxInvoke bof [OPTIONS])
+Usage: NyxInvoke.exe bof [OPTIONS]
 
 Options:
-      --args <ARGS>...             Arguments for the BOF
-      --base <BASE_URL_OR_PATH>    Base URL or Base Path
-      --key <KEY_FILENAME_OR_URL>  Key filename or URL
-      --iv <IV_FILENAME_OR_URL>    IV filename or URL
-      --bof <BOF_FILENAME_OR_URL>  BOF filename or URL
-  -h, --help                       Print help
+      --args <ARGS>...      Arguments to pass to the BOF
+      --base <URL_OR_PATH>  Base URL or path for resources
+      --key <KEY_FILE>      Path to the encryption key file
+      --iv <IV_FILE>        Path to the initialization vector (IV) file
+      --bof <BOF_FILE>      Path or URL to the encrypted BOF file to execute
+  -h, --help                Print help (see more with '--help')
+
+Example: NyxInvoke.exe bof --bof payload.enc --key key.bin --iv iv.bin --args "arg1 arg2"
 ```
 
 ## Examples
