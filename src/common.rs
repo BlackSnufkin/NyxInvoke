@@ -611,43 +611,85 @@ pub fn compiled_bof() -> Option<&'static [u8]> {
 
 
 #[derive(Parser)]
-#[command(name = "NyxInvoke")]
-#[command(about = "Patchless inline-execute assembly", long_about = None)]
+#[command(
+    name = "NyxInvoke",
+    about = "Patchless inline-execute assembly / COFF Loader",
+    version = "0.3.0",
+    author = "BlackSnufkin"
+)]
 pub struct Cli {
     #[command(subcommand)]
     pub mode: Mode,
 }
 
-#[derive(Parser)]
+#[derive(Subcommand)]
 pub enum Mode {
+    /// Execute Common Language Runtime (CLR) assemblies
+    #[command(
+        long_about = "Execute .NET assemblies using the Common Language Runtime (CLR).",
+        after_help = "Example: NyxInvoke.exe clr --assembly payload.enc --key key.bin --iv iv.bin --args \"arg1 arg2\"\n"
+    )]
     Clr {
-        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ', last = true)]
+        /// Arguments to pass to the assembly
+        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ')]
         args: Vec<String>,
-        #[arg(long, value_name = "BASE_URL_OR_PATH")]
+
+        /// Base URL or path for resources
+        #[arg(long, value_name = "URL_OR_PATH")]
         base: Option<String>,
-        #[arg(long, value_name = "KEY_FILENAME_OR_URL")]
+
+        /// Path to the encryption key file
+        #[arg(long, value_name = "KEY_FILE")]
         key: Option<String>,
-        #[arg(long, value_name = "IV_FILENAME_OR_URL")]
+
+        /// Path to the initialization vector (IV) file
+        #[arg(long, value_name = "IV_FILE")]
         iv: Option<String>,
-        #[arg(long, value_name = "ASSEMBLY_FILENAME_OR_URL")]
+
+        /// Path or URL to the encrypted assembly file to execute
+        #[arg(long, value_name = "ASSEMBLY_FILE")]
         assembly: Option<String>,
     },
+
+    /// Execute PowerShell commands or scripts
+    #[command(
+        long_about = "Execute PowerShell commands or scripts.",
+        after_help = "Examples:\nNyxInvoke.exe ps --command \"Get-Process\"\nNyxInvoke.exe ps --script script.ps1\n"
+    )]
     Ps {
+        /// PowerShell command to execute
         #[arg(long, group = "ps_input")]
         command: Option<String>,
+
+        /// Path to PowerShell script file to execute
         #[arg(long, group = "ps_input")]
         script: Option<String>,
     },
+
+    /// Execute Beacon Object Files (BOF)
+    #[command(
+        long_about = "Execute Beacon Object Files (BOF) for Cobalt Strike.",
+        after_help = "Example: NyxInvoke.exe bof --bof payload.enc --key key.bin --iv iv.bin --args \"arg1 arg2\"\n"
+    )]
     Bof {
-        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ', last = true)]
+        /// Arguments to pass to the BOF
+        #[arg(long, value_name = "ARGS", num_args = 1.., value_delimiter = ' ')]
         args: Option<Vec<String>>,
-        #[arg(long, value_name = "BASE_URL_OR_PATH")]
+
+        /// Base URL or path for resources
+        #[arg(long, value_name = "URL_OR_PATH")]
         base: Option<String>,
-        #[arg(long, value_name = "KEY_FILENAME_OR_URL")]
+
+        /// Path to the encryption key file
+        #[arg(long, value_name = "KEY_FILE")]
         key: Option<String>,
-        #[arg(long, value_name = "IV_FILENAME_OR_URL")]
+
+        /// Path to the initialization vector (IV) file
+        #[arg(long, value_name = "IV_FILE")]
         iv: Option<String>,
-        #[arg(long, value_name = "BOF_FILENAME_OR_URL")]
+
+        /// Path or URL to the encrypted BOF file to execute
+        #[arg(long, value_name = "BOF_FILE")]
         bof: Option<String>,
     },
 }
