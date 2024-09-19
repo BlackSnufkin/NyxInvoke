@@ -26,7 +26,7 @@ compiled_bof = []
 [dependencies]
 clroxide = { version = "1.1.1", default-features = true }
 clap = { version = "4.5.0", features = ["derive"] }
-winapi = {version = "0.3.9", features =["ntdef", "ntstatus", "minwindef", "winnt","memoryapi","handleapi","libloaderapi","errhandlingapi","winbase","winuser"]}
+winapi = {version = "0.3.9", features =["minwindef", "winnt","memoryapi","handleapi","errhandlingapi","winbase"]}
 ntapi = {version = "0.4.1"}
 reqwest = { version = "0.11", features = ["blocking"] }
 rust-crypto = "0.2.36"

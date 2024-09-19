@@ -7,6 +7,8 @@ use std::os::raw::{c_char, c_void};
 use common::*;
 use clap::Parser;
 use clap::CommandFactory;
+
+#[cfg(feature = "dll")]
 fn parse_command_line(cmd: &str) -> Vec<String> {
     let mut args = Vec::new();
     let mut current_arg = String::new();

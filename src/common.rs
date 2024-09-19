@@ -1,27 +1,38 @@
 #![allow(non_snake_case, non_camel_case_types,dead_code)]
 
-use std::ffi::CString;
-use std::ptr::null_mut;
-use std::io::Read;
-use std::fs::File;
-use std::mem::{zeroed, size_of};
+use std::{
+    ffi::{CString, CStr},
+    ptr::null_mut,
+    io::{self, Read, Write},
+    fs::File,
+    mem::{zeroed, size_of},
+    sync::Once,
+};
 
-use winapi::ctypes::c_void;
-use winapi::shared::{
-    minwindef::ULONG,
-    ntdef::{NT_SUCCESS, NTSTATUS, OBJECT_ATTRIBUTES},
-    ntstatus::STATUS_SUCCESS,
-};
-use winapi::um::{
-    errhandlingapi::AddVectoredExceptionHandler,
-    libloaderapi::{GetProcAddress, GetModuleHandleA, LoadLibraryA},
-    winnt::{
-        EXCEPTION_POINTERS, CONTEXT, LONG, CONTEXT_ALL, HANDLE, ACCESS_MASK, THREAD_ALL_ACCESS,
-        PVOID,
+use winapi::{
+    ctypes::{c_void, c_char},
+    shared::{
+        minwindef::ULONG,
+        ntdef::{NT_SUCCESS, NTSTATUS, OBJECT_ATTRIBUTES},
+        ntstatus::STATUS_SUCCESS,
     },
-    minwinbase::EXCEPTION_SINGLE_STEP,
+    um::{
+        errhandlingapi::AddVectoredExceptionHandler,
+        libloaderapi::{GetProcAddress, GetModuleHandleA, LoadLibraryA},
+        winnt::{
+            EXCEPTION_POINTERS, CONTEXT, LONG, CONTEXT_ALL, HANDLE, ACCESS_MASK,
+            THREAD_ALL_ACCESS, PVOID,
+        },
+        minwinbase::EXCEPTION_SINGLE_STEP,
+        wincon::{AttachConsole, ATTACH_PARENT_PROCESS},
+        processenv::GetStdHandle,
+        winbase::{STD_OUTPUT_HANDLE, STD_ERROR_HANDLE},
+        handleapi::INVALID_HANDLE_VALUE,
+        fileapi::{FlushFileBuffers, WriteFile},
+    },
+    vc::excpt::{EXCEPTION_CONTINUE_EXECUTION, EXCEPTION_CONTINUE_SEARCH},
 };
-use winapi::vc::excpt::{EXCEPTION_CONTINUE_EXECUTION, EXCEPTION_CONTINUE_SEARCH};
+
 use ntapi::{
     ntexapi::{
         SYSTEM_PROCESS_INFORMATION, SYSTEM_THREAD_INFORMATION, SystemProcessInformation,
@@ -33,28 +44,17 @@ use clroxide::{
     clr::Clr,
     primitives::{_Assembly, wrap_method_arguments, wrap_string_in_variant},
 };
-use reqwest::blocking::get;
+
+use reqwest::blocking::{get, Client};
 use clap::{Parser, Subcommand};
 
-extern crate crypto;
-use crypto::buffer::{BufferResult, ReadBuffer, WriteBuffer};
-use crypto::{aes, blockmodes, buffer, symmetriccipher};
+use crypto::{
+    buffer::{BufferResult, ReadBuffer, WriteBuffer},
+    aes, blockmodes, buffer, symmetriccipher,
+};
+
 use coffee_ldr::loader::Coffee;
 use base64::{Engine as _, engine::general_purpose};
-use std::io;
-use std::io::Write;
-use winapi::ctypes::c_char;
-use std::ffi::CStr;
-use std::sync::Once;
-use winapi::um::wincon::AttachConsole;
-use winapi::um::wincon::ATTACH_PARENT_PROCESS;
-use winapi::um::processenv::GetStdHandle;
-use winapi::um::winbase::STD_OUTPUT_HANDLE;
-use winapi::um::winbase::STD_ERROR_HANDLE;
-use winapi::um::handleapi::INVALID_HANDLE_VALUE;
-use winapi::um::fileapi::FlushFileBuffers;
-use winapi::um::fileapi::WriteFile;
-use reqwest::blocking::Client;
 
 static INIT: Once = Once::new();
 
@@ -577,6 +577,9 @@ fn parse_bof_arguments(args: &[String]) -> Result<Vec<u8>, String> {
 }
 
 
+
+
+
 #[cfg(feature = "compiled_clr")]
 #[link_section = ".rdata"]
 pub fn compiled_clr() -> (&'static [u8], [u8; 32], [u8; 16]) {
@@ -627,7 +630,7 @@ pub enum Mode {
     /// Execute Common Language Runtime (CLR) assemblies
     #[command(
         long_about = "Execute .NET assemblies using the Common Language Runtime (CLR).",
-        after_help = "Example: NyxInvoke.exe clr --assembly payload.enc --key key.bin --iv iv.bin --args \"arg1 arg2\"\n"
+        after_help = "Example: NyxInvoke.exe clr --assembly payload.enc --key key.bin --iv iv.bin --args \"arg1 arg2\""
     )]
     Clr {
         /// Arguments to pass to the assembly
@@ -654,7 +657,7 @@ pub enum Mode {
     /// Execute PowerShell commands or scripts
     #[command(
         long_about = "Execute PowerShell commands or scripts.",
-        after_help = "Examples:\nNyxInvoke.exe ps --command \"Get-Process\"\nNyxInvoke.exe ps --script script.ps1\n"
+        after_help = "Examples:\nNyxInvoke.exe ps --command \"Get-Process\"\nNyxInvoke.exe ps --script script.ps1"
     )]
     Ps {
         /// PowerShell command to execute
@@ -669,7 +672,7 @@ pub enum Mode {
     /// Execute Beacon Object Files (BOF)
     #[command(
         long_about = "Execute Beacon Object Files (BOF) for Cobalt Strike.",
-        after_help = "Example: NyxInvoke.exe bof --bof payload.enc --key key.bin --iv iv.bin --args \"arg1 arg2\"\n"
+        after_help = "Example: NyxInvoke.exe bof --bof payload.enc --key key.bin --iv iv.bin --args \"arg1 arg2\""
     )]
     Bof {
         /// Arguments to pass to the BOF
